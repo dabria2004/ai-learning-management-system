@@ -4,14 +4,21 @@ import com.ai.entity.User.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import javax.annotation.Resource;
+
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Resource(name = "MyUserDetailsServiceImpl")
+    private UserDetailsService userDetailsService;
+
     @Bean
-    PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -20,7 +27,8 @@ public class SecurityConfig {
 
         http.csrf().disable();
         http.formLogin(form -> form.loginPage("/login").defaultSuccessUrl("/"));
-        http.logout(logout -> logout.logoutUrl("/logout").invalidateHttpSession(true).logoutSuccessUrl("/"));
+        http.logout(logout -> logout.logoutUrl("/logout").invalidateHttpSession(true).logoutSuccessUrl("/"))
+                .rememberMe().key("remember-me").tokenValiditySeconds(100).rememberMeCookieName("remember-me");
         http.exceptionHandling().accessDeniedPage("/denied-page");
         http.authorizeHttpRequests(auth -> auth
                 .mvcMatchers("/login", "/resources/**").permitAll()
