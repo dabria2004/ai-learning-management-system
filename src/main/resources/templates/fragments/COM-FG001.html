@@ -24,10 +24,10 @@
                             <a class="nav-link active" aria-current="page" th:href="@{/admin/home}">Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a th:href="@{/admin/course/create}" class="nav-link">Course Register</a>
+                            <a th:href="@{/admin/teacher-list}" class="nav-link">Teacher</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/admin/batch/list}">Batch Management</a>
+                            <a class="nav-link" th:href="@{/admin/student-list}">Student</a>
                         </li>
                     </ul>
                 </div>
@@ -175,6 +175,69 @@
     </div>
 </div>
 
+
+<div th:fragment="teacher-register" class="modal fade" data-bs-backdrop="static" id="teacherRegister" tabindex="-1"
+     aria-labelledby="moduleCreateLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="teacherRegisterLabel"><i class="fa-thin fa-person-chalkboard me-2"></i></i>Register Teacher
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/admin/teacher-register}" method="post" enctype="multipart/form-data"
+                      th:object="${teacher}" id="teacherRegisterForm">
+
+                    <div class="mb-3">
+                        <div class="form-group mb-3">
+                            <label for="name">Teacher ID</label>
+                            <input type="text" th:field="*{loginId}" class="form-control mt-2"
+                                   placeholder="Enter ID" id="id" th:required="true"/>
+                            <span th:errors="*{loginId}" class="text-danger"></span>
+                            <span th:text="${error}" class="text-danger"
+                                  th:if="${error != null}" id="error"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="name">Teacher Name</label>
+                            <input type="text" th:field="*{name}" class="form-control mt-2"
+                                   placeholder="Enter Teacher Name" id="teacher" th:required="true"/>
+                            <span th:errors="*{name}" class="text-danger"></span>
+                            <span th:text="${error}" class="text-danger"
+                                  th:if="${error != null}" id="error"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="email">Email</label>
+                            <input type="text" th:field="*{email}" class="form-control mt-2"
+                                   placeholder="Enter Email" id="email" th:required="true"/>
+                            <span th:errors="*{email}" class="text-danger"></span>
+                            <span th:text="${error}" class="text-danger"
+                                  th:if="${error != null}" id="error"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <input type="hidden" name="role" th:value="Teacher">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="file">Batch</label>
+                            <select name="batch" id="batch" multiple>
+                                <!--                                    th:required="true">-->
+                                <option value="Select Batch" selected disabled></option>
+                                <option value=""></option>
+                            </select>
+                            <span  class="text-danger"></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-outline-primary" form="moduleCreateForm">
+                    Create
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 </body>
