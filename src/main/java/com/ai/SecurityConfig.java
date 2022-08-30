@@ -28,7 +28,7 @@ public class SecurityConfig {
         http.csrf().disable();
         http.formLogin(form -> form.loginPage("/login").defaultSuccessUrl("/"));
         http.logout(logout -> logout.logoutUrl("/logout").invalidateHttpSession(true).logoutSuccessUrl("/"))
-                .rememberMe().key("remember-me").tokenValiditySeconds(100).rememberMeCookieName("remember-me");
+                .rememberMe().key("remember-me").tokenValiditySeconds(172800).rememberMeCookieName("remember-me");
         http.exceptionHandling().accessDeniedPage("/denied-page");
         http.authorizeHttpRequests(auth -> auth
                 .mvcMatchers("/login", "/resources/**").permitAll()
