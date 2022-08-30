@@ -41,18 +41,14 @@
                         <td th:text="${teacher.email}"></td>
                         <td class="text-end">
                             <a class="btn btn-warning"
-                               th:attr="href='#edit-teacher-button' + ${teacher.loginId}"
+                               th:attr="href='#edit-course-button' + ${teacher.loginId}"
                                data-bs-toggle="modal">
                                 <i class="bi bi-pencil-square me-2"></i>Edit
                             </a>
+                            <div th:replace="fragments/COM-FG001 :: teacher-edit"></div>
                             <a class="btn btn-danger" id="deleteBtn"
-                               th:attr="onclick=|deleteAction('${teacher.loginId}')|,user-name=|${teacher.name}|"><i class="bi bi-trash-fill me-2"></i>Delete
+                               th:attr="onclick=|deleteAction('${teacher.loginId}')|,teacher-name=|${teacher.name}|"><i class="bi bi-trash-fill me-2"></i>Delete
                             </a>
-
-                            <div th:replace="fragments/COM-FG001 :: course-edit"></div>
-                            <!--                <a class="btn btn-danger" id="deleteBtn"-->
-                            <!--                   th:attr="onclick=|deleteAction('${user.loginId}')|,course-name=|${user.name}|"><i class="bi bi-trash-fill me-2"></i>Delete-->
-                            <!--                </a>-->
                         </td>
                     </tr>
                     </tbody>
