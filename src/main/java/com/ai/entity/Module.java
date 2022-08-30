@@ -20,7 +20,7 @@ public class Module implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 20, nullable = false, unique = true)
+    @Column(length = 30, nullable = false, unique = true)
     @NotBlank(message = "Module name is required!")
     private String name;
 

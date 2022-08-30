@@ -29,6 +29,9 @@ public class ModuleService {
     @Autowired
     private FileService fileService;
 
+    @Autowired
+    private CourseService courseService;
+
     public List<Module> findAll() {
         return repository.findAll();
     }
@@ -63,5 +66,15 @@ public class ModuleService {
 
     public Module findById(int moduleId) {
         return repository.findById(moduleId).get();
+    }
+
+    public void edit(Module m){
+        repository.save(m);
+    }
+
+    public void deleteById(int moduleId, String moduleName, int courseId) throws IOException {
+        var courseName = courseService.findById(courseId).getName();
+        fileService.deleteFolder(courseName.concat("\\").concat(moduleName));
+        repository.deleteById(moduleId);
     }
 }

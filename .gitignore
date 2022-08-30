@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+*.mp4
+*.pdf
+*.docx
+*.xslx

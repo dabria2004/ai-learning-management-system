@@ -16,12 +16,15 @@
       </h3>
     </div>
     <div class="add-schedule d-flex justify-content-end mb-2">
-      <a th:href="@{/admin/course-detail?courseId=}+${courseId}" class="btn btn-outline-secondary me-2">
+      <a th:href="@{/admin/course-detail?courseId=}+${course.id}" class="btn btn-outline-secondary me-2">
         <i class="bi bi-list me-2"></i>Back to Modules
       </a>
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#moduleCreate">
-        <i class="bi bi-bookmark-plus me-2"></i>Create Module
+      <button type="button" class="btn btn-primary">
+        <i class="bi bi-file-earmark me-2"></i>Create Resource
       </button>
+      <form action="" class="d-none" id="resourceUploadForm">
+        <input type="hidden" accept="*.doc,*.docx,*.pdf,*.xslx" name="resource" id="resourceInput">
+      </form>
       <div th:replace="fragments/COM-FG001 :: module-create"></div>
     </div>
     <div class="card">
@@ -33,27 +36,18 @@
             <th>No</th>
             <th>Name</th>
             <th>File</th>
-            <th class="text-end">Video</th>
             <th class="text-end"></th>
           </tr>
           </thead>
           <tbody>
-          <tr th:each="module : ${modules}" style="vertical-align: middle">
-            <td th:text="${module.id}"></td>
-            <td th:text="${module.name}"></td>
-            <td class="text-end">
-              <a th:href="@{/admin/resource-list?moduleId=} + ${module.id}" class="btn btn-primary">
-                <span th:text="${module.resourceCount}"></span> <span th:text="${module.resourceCount} > 1 ? 'resources' : 'resource'"></span>
-              </a>
+          <tr th:each="resource : ${resources}" style="vertical-align: middle">
+            <td th:text="${resource.id}"></td>
+            <td th:text="${resource.name}"></td>
+            <td>
+              <a th:href="@{/resources/courses/}+${course.name}+@{/}+${moduleName}+@{/resources/}+${resource.name}" target="_blank">Open File</a>
             </td>
             <td class="text-end">
-              <a class="btn btn-success">
-                <span th:text="${module.videoCount}"></span> <span th:text="${module.videoCount} > 1 ? 'videos' : 'video'"></span>
-              </a>
-            </td>
-            <td class="text-end">
-              <a href="" class="btn btn-primary"><i class="bi bi-pencil-square me-2"></i>Edit</a>
-              <a href="" class="btn btn-danger"><i class="bi bi-trash-fill me-2"></i>Delete</a>
+              <button type="button" id="resourceDeleteBtn" th:attr="resource-id=${resource.id}" class="btn btn-danger"><i class="bi bi-trash-fill me-2"></i>Delete</button>
             </td>
           </tr>
           </tbody>
@@ -61,6 +55,61 @@
       </div>
     </div>
   </div>
+  <script>
+    document.getElementById('resourceDeleteBtn').addEventListener('click', ()=>{
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-danger me-2',
+          cancelButton: 'btn btn-secondary'
+        },
+        buttonsStyling: false
+      })
+
+      swalWithBootstrapButtons.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          var resourceId = document.getElementById('resourceDeleteBtn').getAttribute('resource-id');
+          window.location = `http://localhost:9090/admin/resource-delete?resourceId=${resourceId}`;
+        } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+                  'Cancelled',
+                  'Your imaginary file is safe :)',
+                  'error'
+          )
+        }
+      })
+    })
+
+    let message = document.getElementById('message');
+    if (message !== null && message.innerText !== "") {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+      })
+
+      Toast.fire({
+        icon: 'success',
+        title: message.innerText
+      })
+    }
+  </script>
 </div>
 </body>
 </html>

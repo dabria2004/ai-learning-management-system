@@ -52,9 +52,12 @@
                             </a>
                         </td>
                         <td class="text-end">
-                            <a href="" class="btn btn-primary"><i class="bi bi-pencil-square me-2"></i>Edit</a>
-                            <a href="" class="btn btn-danger"><i class="bi bi-trash-fill me-2"></i>Delete</a>
+                            <a class="btn btn-warning" th:attr="href='#edit-module-button' + ${module.id}" data-bs-toggle="modal"><i class="bi bi-pencil-square me-2"></i>Edit</a>
+                            <a th:attr="onclick=|deleteModuleAction('${module.id}')|" class="btn btn-danger" id="deleteBtn">
+                                <i class="bi bi-trash-fill me-2"></i>Delete
+                            </a>
                         </td>
+                        <div th:replace="fragments/COM-FG001 :: module-edit"></div>
                     </tr>
                     </tbody>
                 </table>
@@ -101,6 +104,39 @@
                 myInput.focus()
             })
         })
+
+        const deleteModuleAction = (moduleId) => {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger me-2'
+                },
+                buttonsStyling: false
+            })
+
+            swalWithBootstrapButtons.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location = `http://localhost:9090/admin/module-delete?moduleId=${moduleId}`;
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelled',
+                        'Your imaginary file is safe :)',
+                        'error'
+                    )
+                }
+            })
+        }
 
         $(document).ready( function () {
             $('#moduleTable').DataTable();

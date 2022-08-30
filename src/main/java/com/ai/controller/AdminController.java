@@ -124,8 +124,40 @@ public class AdminController {
         m.put("resources", resources);
         var module = moduleService.findById(moduleId);
         m.put("moduleName", module.getName());
-        m.put("courseId", module.getCourse().getId());
+        m.put("course", module.getCourse());
         return "ADM-RS001";
+    }
+
+    @PostMapping("module-edit")
+    public String moduleEdit(@RequestParam int moduleId, @RequestParam String name, @RequestParam int courseId) throws IOException {
+        var m = moduleService.findById(moduleId);
+        var courseName = courseService.findById(courseId).getName();
+        fileService.renameFolder(courseName.concat("\\").concat(m.getName()), name);
+        m.setName(name);
+        m.setVideo(new MultipartFile[]{});
+        m.setResource(new MultipartFile[]{});
+        moduleService.edit(m);
+        return "redirect:/admin/course-detail?courseId=%d".formatted(courseId);
+    }
+
+    @GetMapping("module-delete")
+    public String deleteCourse(@RequestParam int moduleId, RedirectAttributes attr)
+            throws IOException {
+        var m = moduleService.findById(moduleId);
+        var courseId = m.getCourse().getId();
+        moduleService.deleteById(moduleId, m.getName(), courseId);
+        attr.addFlashAttribute("message", "%s module deleted successfully!".formatted(m.getName()));
+        return "redirect:/admin/course-detail?courseId=%d".formatted(courseId);
+    }
+
+    @GetMapping("resource-delete")
+    public String deleteResource(@RequestParam int resourceId, RedirectAttributes attributes){
+        var resource = resourceService.findById(resourceId);
+        var moduleName = resource.getModule().getName();
+        var courseName = resource.getModule().getCourse().getName();
+        resourceService.deleteById(resource, moduleName, courseName);
+        attributes.addFlashAttribute("message", "%s resource deleted successfully!".formatted(resource.getName()));
+        return "redirect:/admin/resource-list?moduleId=%d".formatted(resource.getModule().getId());
     }
 
     @ModelAttribute("courses")

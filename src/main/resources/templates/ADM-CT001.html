@@ -44,11 +44,11 @@
                    data-bs-toggle="modal">
                   <i class="bi bi-pencil-square me-2"></i>Edit
                 </a>
-                <div th:replace="fragments/COM-FG001 :: course-edit"></div>
                 <a class="btn btn-danger" id="deleteBtn"
                    th:attr="onclick=|deleteAction('${course.id}')|,course-name=|${course.name}|"><i class="bi bi-trash-fill me-2"></i>Delete
                 </a>
               </td>
+              <div th:replace="fragments/COM-FG001 :: course-edit"></div>
             </tr>
             </tbody>
           </table>
@@ -123,11 +123,6 @@
         if (result.isConfirmed) {
           let courseName = document.getElementById('deleteBtn').getAttribute('course-name');
           window.location = `http://localhost:9090/admin/course-delete?courseId=${courseId}&courseName=${courseName}`;
-          swalWithBootstrapButtons.fire(
-                  'Deleted!',
-                  'Your file has been deleted.',
-                  'success'
-          )
         } else if (
                 /* Read more about handling dismissals below */
                 result.dismiss === Swal.DismissReason.cancel

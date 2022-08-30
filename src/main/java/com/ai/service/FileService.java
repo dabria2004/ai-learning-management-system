@@ -47,4 +47,5 @@ public class FileService {
         var folder = new File(courseFilePath.concat("\\").concat(folderName));
         FileUtils.deleteDirectory(folder);
     }
+
 }
