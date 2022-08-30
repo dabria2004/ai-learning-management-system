@@ -2,6 +2,7 @@ package com.ai.controller;
 
 import com.ai.entity.Course;
 import com.ai.entity.Module;
+import com.ai.entity.User;
 import com.ai.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,9 @@ public class AdminController {
 
     @Autowired
     private CourseService courseService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private ModuleService moduleService;
@@ -173,5 +177,32 @@ public class AdminController {
     @ModelAttribute("module")
     Module module() {
         return new Module();
+    }
+
+
+    @ModelAttribute("teacher")
+    public User user() {
+        return new User();
+    }
+
+    @PostMapping("teacher-register")
+    public String postCreate(@Validated @ModelAttribute User user, BindingResult bs, RedirectAttributes attr, ModelMap m){
+        if(bs.hasErrors()){
+            return "ADM-TC001";
+        }
+        var c = userService.findByLoginId(user.getLoginId());
+        if(c != null) {
+            attr.addFlashAttribute("error", "%s course has already existed!".formatted(user.getLoginId()));
+            return "redirect:/admin/course-list";
+        }
+        userService.save(user);
+        attr.addFlashAttribute("cmessage", "%s course created successfully!".formatted(user.getName()));
+        return "redirect:/admin/teacher-list";
+    }
+
+    @GetMapping("teacher-list")
+    public String teacherList(ModelMap m) {
+        m.put("teachers", userService.findUserByTeacherRole());
+        return "ADM-TC001";
     }
 }
